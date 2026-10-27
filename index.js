@@ -1,6 +1,7 @@
 import express from "express";
-
 import { pool } from "./db.js";
+import * as housesRepository from "./repositories/houses.respository.js";
+import * as housesController from "./controllers/houses.controller.js";
 
 const app = express();
 const port = 3000;
@@ -13,10 +14,9 @@ app.get("/", (req, res) => res.send("Hello World"));
 //GET all teachers
 app.get("/teachers", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM teachers");
-    console.log(result);
+    const allTeachers = await houseRepository.getAllHouses();
 
-    res.json(result.rows);
+    res.json(allTeachers);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Database error", code: err.code });
@@ -91,88 +91,88 @@ app.delete("/teachers/:id", async (req, res) => {
   }
 });
 
-//TEACHERS
+// //TEACHERS
 
-//GET all teachers
-app.get("/teachers", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM teachers");
-    console.log(result);
+// //GET all teachers
+// app.get("/teachers", async (req, res) => {
+//   try {
+//     const result = await pool.query("SELECT * FROM teachers");
+//     console.log(result);
 
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error", code: err.code });
-  }
-});
+//     res.json(result.rows);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Database error", code: err.code });
+//   }
+// });
 
-// GET single teacher by ID
-app.get("/teachers/:id", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM teachers WHERE id = $1", [
-      req.params.id,
-    ]);
-    if (result.rowCount === 0) return res.sendStatus(404);
+// // GET single teacher by ID
+// app.get("/teachers/:id", async (req, res) => {
+//   try {
+//     const result = await pool.query("SELECT * FROM teachers WHERE id = $1", [
+//       req.params.id,
+//     ]);
+//     if (result.rowCount === 0) return res.sendStatus(404);
 
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+//     res.status(200).json(result.rows[0]);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// });
 
-//CREATE new teacher
-app.post("/teachers", async (req, res) => {
-  const teacher = req.body;
+// //CREATE new teacher
+// app.post("/teachers", async (req, res) => {
+//   const teacher = req.body;
 
-  try {
-    const result = await pool.query(
-      "INSERT INTO teachers (name, house) VALUES ($1, $2) RETURNING name, house",
-      [teacher.name, teacher.house],
-    );
+//   try {
+//     const result = await pool.query(
+//       "INSERT INTO teachers (name, house) VALUES ($1, $2) RETURNING name, house",
+//       [teacher.name, teacher.house],
+//     );
 
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+//     res.status(201).json(result.rows[0]);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// });
 
-// UPDATE an existing teacher
-app.put("/teachers/:id", async (req, res) => {
-  const teacher = req.body;
-  const id = req.params.id;
+// // UPDATE an existing teacher
+// app.put("/teachers/:id", async (req, res) => {
+//   const teacher = req.body;
+//   const id = req.params.id;
 
-  try {
-    const result = await pool.query(
-      "UPDATE teachers SET name = $1, house = $2 WHERE id = $3 RETURNING name, house, id",
-      [teacher.name, teacher.house, id],
-    );
+//   try {
+//     const result = await pool.query(
+//       "UPDATE teachers SET name = $1, house = $2 WHERE id = $3 RETURNING name, house, id",
+//       [teacher.name, teacher.house, id],
+//     );
 
-    if (result.rowCount === 0) return res.sendStatus(404);
+//     if (result.rowCount === 0) return res.sendStatus(404);
 
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+//     res.status(201).json(result.rows[0]);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// });
 
-// DELETE single teacher
-app.delete("/teachers/:id", async (req, res) => {
-  try {
-    const del = await pool.query("DELETE FROM teachers WHERE id = $1", [
-      req.params.id,
-    ]);
+// // DELETE single teacher
+// app.delete("/teachers/:id", async (req, res) => {
+//   try {
+//     const del = await pool.query("DELETE FROM teachers WHERE id = $1", [
+//       req.params.id,
+//     ]);
 
-    if (del.rowCount === 0) return res.sendStatus(404);
+//     if (del.rowCount === 0) return res.sendStatus(404);
 
-    res.sendStatus(204);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+//     res.sendStatus(204);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// });
 
 //STUDENTS
 
@@ -259,28 +259,12 @@ app.delete("/students/:id", async (req, res) => {
 
 // GET all houses
 app.get("/houses", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM houses ORDER BY id");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error", code: err.code });
-  }
+  const allHouses = await housesController.getAllHouses(req, res);
 });
 
 // GET single house by ID
 app.get("/houses/:id", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM houses WHERE id = $1", [
-      req.params.id,
-    ]);
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  const singleHouse = await housesController.singleHouse(req, res);
 });
 
 // CREATE new house
