@@ -1,6 +1,6 @@
 import express from "express";
 import { pool } from "./db.js";
-import * as housesController from "./controllers/houses.controller.js";
+import houseRouter from "./Routers/houses.router.js";
 import * as teachersController from "./controllers/teachers.controller.js";
 
 const app = express();
@@ -11,21 +11,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => res.send("Hello World"));
 
-//HOUSES
-
-// GET all houses
-app.get("/houses", async (req, res) => {
-  const allHouses = await housesController.getAllHouses(req, res);
-});
-
-// GET single house by ID
-app.get("/houses/:id", async (req, res) => {
-  const singleHouse = await housesController.singleHouse(req, res);
-});
+app.use("/houses/", houseRouter);
 
 //GET all teachers
 app.get("/teachers", async (req, res) => {
-  const allTeachers = await teachersController.getAllTeachers(req, res);
+  await teachersController.getAllTeachers(req, res);
 });
 
 // GET single teacher by ID
