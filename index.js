@@ -1,7 +1,7 @@
 import express from "express";
 import { pool } from "./db.js";
-import * as housesRepository from "./repositories/houses.respository.js";
 import * as housesController from "./controllers/houses.controller.js";
+import * as teachersController from "./controllers/teachers.controller.js";
 
 const app = express();
 const port = 3000;
@@ -25,82 +25,27 @@ app.get("/houses/:id", async (req, res) => {
 
 //GET all teachers
 app.get("/teachers", async (req, res) => {
-  try {
-    const allTeachers = await housesRepository.getAllTeachers();
-
-    res.json(allTeachers);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error", code: err.code });
-  }
+  const allTeachers = await teachersController.getAllTeachers(req, res);
 });
 
 // GET single teacher by ID
 app.get("/teachers/:id", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM teachers WHERE id = $1", [
-      req.params.id,
-    ]);
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  await teachersController.getTeacherById(req, res);
 });
 
 //CREATE new teacher
 app.post("/teachers", async (req, res) => {
-  const teacher = req.body;
-
-  try {
-    const result = await pool.query(
-      "INSERT INTO teachers (name, house) VALUES ($1, $2) RETURNING name, house",
-      [teacher.name, teacher.house],
-    );
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  await teachersController.createTeacher(req, res);
 });
 
 // UPDATE an existing teacher
 app.put("/teachers/:id", async (req, res) => {
-  const teacher = req.body;
-  const id = req.params.id;
-
-  try {
-    const result = await pool.query(
-      "UPDATE teachers SET name = $1, house = $2 WHERE id = $3 RETURNING name, house, id",
-      [teacher.name, teacher.house, id],
-    );
-
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  await teachersController.updateTeacher(req, res);
 });
 
 // DELETE single teacher
 app.delete("/teachers/:id", async (req, res) => {
-  try {
-    const del = await pool.query("DELETE FROM teachers WHERE id = $1", [
-      req.params.id,
-    ]);
-
-    if (del.rowCount === 0) return res.sendStatus(404);
-
-    res.sendStatus(204);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  await teachersController.deleteTeacher(req, res);
 });
 
 //STUDENTS
