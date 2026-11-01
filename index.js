@@ -1,5 +1,8 @@
-const express = require("express");
-const pool = require("./db");
+import express from "express";
+import { pool } from "./db.js";
+import houseRouter from "./Routers/houses.router.js";
+import * as teachersController from "./controllers/teachers.controller.js";
+
 const app = express();
 const port = 3000;
 
@@ -8,168 +11,31 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => res.send("Hello World"));
 
+app.use("/houses/", houseRouter);
+
 //GET all teachers
 app.get("/teachers", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM teachers");
-    console.log(result);
-
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error", code: err.code });
-  }
+  await teachersController.getAllTeachers(req, res);
 });
 
 // GET single teacher by ID
 app.get("/teachers/:id", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM teachers WHERE id = $1", [
-      req.params.id,
-    ]);
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  await teachersController.getTeacherById(req, res);
 });
 
 //CREATE new teacher
 app.post("/teachers", async (req, res) => {
-  const teacher = req.body;
-
-  try {
-    const result = await pool.query(
-      "INSERT INTO teachers (name, house) VALUES ($1, $2) RETURNING name, house",
-      [teacher.name, teacher.house],
-    );
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  await teachersController.createTeacher(req, res);
 });
 
 // UPDATE an existing teacher
 app.put("/teachers/:id", async (req, res) => {
-  const teacher = req.body;
-  const id = req.params.id;
-
-  try {
-    const result = await pool.query(
-      "UPDATE teachers SET name = $1, house = $2 WHERE id = $3 RETURNING name, house, id",
-      [teacher.name, teacher.house, id],
-    );
-
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  await teachersController.updateTeacher(req, res);
 });
 
 // DELETE single teacher
 app.delete("/teachers/:id", async (req, res) => {
-  try {
-    const del = await pool.query("DELETE FROM teachers WHERE id = $1", [
-      req.params.id,
-    ]);
-
-    if (del.rowCount === 0) return res.sendStatus(404);
-
-    res.sendStatus(204);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-//TEACHERS
-
-//GET all teachers
-app.get("/teachers", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM teachers");
-    console.log(result);
-
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error", code: err.code });
-  }
-});
-
-// GET single teacher by ID
-app.get("/teachers/:id", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM teachers WHERE id = $1", [
-      req.params.id,
-    ]);
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-//CREATE new teacher
-app.post("/teachers", async (req, res) => {
-  const teacher = req.body;
-
-  try {
-    const result = await pool.query(
-      "INSERT INTO teachers (name, house) VALUES ($1, $2) RETURNING name, house",
-      [teacher.name, teacher.house],
-    );
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-// UPDATE an existing teacher
-app.put("/teachers/:id", async (req, res) => {
-  const teacher = req.body;
-  const id = req.params.id;
-
-  try {
-    const result = await pool.query(
-      "UPDATE teachers SET name = $1, house = $2 WHERE id = $3 RETURNING name, house, id",
-      [teacher.name, teacher.house, id],
-    );
-
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-// DELETE single teacher
-app.delete("/teachers/:id", async (req, res) => {
-  try {
-    const del = await pool.query("DELETE FROM teachers WHERE id = $1", [
-      req.params.id,
-    ]);
-
-    if (del.rowCount === 0) return res.sendStatus(404);
-
-    res.sendStatus(204);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
+  await teachersController.deleteTeacher(req, res);
 });
 
 //STUDENTS
@@ -241,87 +107,6 @@ app.put("/students/:id", async (req, res) => {
 app.delete("/students/:id", async (req, res) => {
   try {
     const del = await pool.query("DELETE FROM students WHERE id = $1", [
-      req.params.id,
-    ]);
-
-    if (del.rowCount === 0) return res.sendStatus(404);
-
-    res.sendStatus(204);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-//HOUSES
-
-// GET all houses
-app.get("/houses", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM houses ORDER BY id");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error", code: err.code });
-  }
-});
-
-// GET single house by ID
-app.get("/houses/:id", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM houses WHERE id = $1", [
-      req.params.id,
-    ]);
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-// CREATE new house
-app.post("/houses", async (req, res) => {
-  const house = req.body;
-
-  try {
-    const result = await pool.query(
-      "INSERT INTO houses (name, color, founder) VALUES ($1, $2, $3) RETURNING *",
-      [house.name, house.color, house.founder],
-    );
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-// UPDATE an existing house
-app.put("/houses/:id", async (req, res) => {
-  const house = req.body;
-  const id = req.params.id;
-
-  try {
-    const result = await pool.query(
-      "UPDATE houses SET name = $1, color = $2, founder = $3 WHERE id = $4 RETURNING *",
-      [house.name, house.color, house.founder, id],
-    );
-
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-// DELETE single house
-app.delete("/houses/:id", async (req, res) => {
-  try {
-    const del = await pool.query("DELETE FROM houses WHERE id = $1", [
       req.params.id,
     ]);
 
