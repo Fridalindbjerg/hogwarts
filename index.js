@@ -2,7 +2,7 @@ import express from "express";
 import { pool } from "./db.js";
 import houseRouter from "./Routers/houses.router.js";
 import teacherRouter from "./Routers/teachers.router.js";
-import * as teachersController from "./controllers/teachers.controller.js";
+import studentRouter from "./Routers/students.router.js";
 
 const app = express();
 const port = 3000;
@@ -20,84 +20,60 @@ app.use("/teachers/", teacherRouter);
 
 //STUDENTS
 
-// GET all students
-app.get("/students", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM students ORDER BY id");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error", code: err.code });
-  }
-});
+app.use("/students/", studentRouter);
 
-// GET single student by ID
-app.get("/students/:id", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM students WHERE id = $1", [
-      req.params.id,
-    ]);
-    if (result.rowCount === 0) return res.sendStatus(404);
+// // CREATE new student
+// app.post("/students", async (req, res) => {
+//   const student = req.body;
 
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+//   try {
+//     const result = await pool.query(
+//       "INSERT INTO students (name, house, year) VALUES ($1, $2, $3) RETURNING *",
+//       [student.name, student.house, student.year],
+//     );
 
-// CREATE new student
-app.post("/students", async (req, res) => {
-  const student = req.body;
+//     res.status(201).json(result.rows[0]);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// });
 
-  try {
-    const result = await pool.query(
-      "INSERT INTO students (name, house, year) VALUES ($1, $2, $3) RETURNING *",
-      [student.name, student.house, student.year],
-    );
+// // UPDATE an existing student
+// app.put("/students/:id", async (req, res) => {
+//   const student = req.body;
+//   const id = req.params.id;
 
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+//   try {
+//     const result = await pool.query(
+//       "UPDATE students SET name = $1, house = $2, year = $3 WHERE id = $4 RETURNING *",
+//       [student.name, student.house, student.year, id],
+//     );
 
-// UPDATE an existing student
-app.put("/students/:id", async (req, res) => {
-  const student = req.body;
-  const id = req.params.id;
+//     if (result.rowCount === 0) return res.sendStatus(404);
 
-  try {
-    const result = await pool.query(
-      "UPDATE students SET name = $1, house = $2, year = $3 WHERE id = $4 RETURNING *",
-      [student.name, student.house, student.year, id],
-    );
+//     res.status(200).json(result.rows[0]);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// });
 
-    if (result.rowCount === 0) return res.sendStatus(404);
+// // DELETE single student
+// app.delete("/students/:id", async (req, res) => {
+//   try {
+//     const del = await pool.query("DELETE FROM students WHERE id = $1", [
+//       req.params.id,
+//     ]);
 
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+//     if (del.rowCount === 0) return res.sendStatus(404);
 
-// DELETE single student
-app.delete("/students/:id", async (req, res) => {
-  try {
-    const del = await pool.query("DELETE FROM students WHERE id = $1", [
-      req.params.id,
-    ]);
-
-    if (del.rowCount === 0) return res.sendStatus(404);
-
-    res.sendStatus(204);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
+//     res.sendStatus(204);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// });
 
 //COURSES
 

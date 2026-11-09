@@ -5,7 +5,10 @@ info:
 
 http:
   method: POST
-  url: http://localhost:3000/student
+  url: http://localhost:3000/students
+  body:
+    type: json
+    data: '{"name":"frida","year":"2035","house":"ethus"}'
   auth: inherit
 
 settings:
