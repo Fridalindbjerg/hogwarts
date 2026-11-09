@@ -15,6 +15,7 @@ export async function getCourseById(id) {
   }
 }
 
+//create course
 // pseudo: insert i tabel. return row [0] (1)
 export async function createCourse(course) {
   const result = await pool.query(
@@ -24,6 +25,7 @@ export async function createCourse(course) {
   return result.rows[0];
 }
 
+//update
 export async function updateCourses(course, id) {
   const result = await pool.query(
     "UPDATE courses SET name = $1, teacher = $2, students = $3 WHERE id = $4 RETURNING name, teacher, students, id",
@@ -36,6 +38,7 @@ export async function updateCourses(course, id) {
   }
 }
 
+//Delete course
 export async function deleteCourse(id) {
   const result = await pool.query("DELETE FROM courses WHERE id = $1", [id]);
   if (result.rowCount === 0) {

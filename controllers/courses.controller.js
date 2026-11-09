@@ -40,6 +40,7 @@ export async function createCourse(req, res) {
   }
 }
 
+//UPDATE course
 export async function updateCourse(req, res) {
   try {
     const course = req.body;
@@ -57,6 +58,7 @@ export async function updateCourse(req, res) {
   }
 }
 
+//Delete course
 export async function deleteCourse(req, res) {
   try {
     const id = req.params.id;
@@ -72,6 +74,7 @@ export async function deleteCourse(req, res) {
   }
 }
 
+//UPDATE teacher on course
 export async function updateTeacherOnCourse(req, res) {
   try {
     const course = req.body;
@@ -108,8 +111,8 @@ export async function addStudentToCourse(req, res) {
 
 export async function removeStudentFromCourse(req, res) {
   try {
-    const body = req.body;
     const id = req.params.id;
+    const body = req.body;
     const result = await coursesRepository.removeStudentFromCourse(body, id);
 
     if (result.rowCount === 0) return res.sendStatus(404);

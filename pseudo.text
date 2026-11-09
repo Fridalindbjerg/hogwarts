@@ -1,0 +1,73 @@
+**Psuedokode til courses**
+
+//GET all courses
+GET/courses
+- henter alle courses med select *
+- retunerer alle rows
+- laver alle rows om til json.
+- hvis der er fejl, sender vi en databasefejl
+
+//GET single course
+GET/courses/:id
+- pakker vores id ud fra params
+- henter vores enkelte course med select på id
+- hvis vi ikke finder nogle rows, så returner vi null = kommer 404 fejl fra controller
+- hvis der er row, så returnere vi den i json (200)
+- hvis der sker en fejl, så smidder vi 500: databasefejl
+
+//CREATE new course
+POST/course
+- sætter course som vores body
+- opretter vores course med alle values 
+- retunerer name, teacher og students fra vores 
+course fra body i tabellen
+- retunerer vores nye row i repositories
+- laver vores svar om til json
+- hvis fejl, sender vi 500: database fejl
+
+//UPDATE course
+PUT/course/:id
+- pakker id ud
+- sætter body
+- henter course på id, og opdatere body og aflevere name, teacher, students, id til rækken
+- hvis ingen række findes: return null: kaster 404: findes ikke
+- ellers retunerer rækken
+hvis fejl, kaster 500: databasefejl
+
+//DELETE course 
+DEL/courses/:id
+- pakker id ud fra params
+- henter vores row på id, og sletter, hvis id findes
+- hvis der ingen rows er, return null = controller sender 404: findes ikke
+- hvis findes: kaster 204: no content -> altså slettet
+Hvis fejl, kaster 500: databasefejl
+
+//UPDATE teacher on course
+PUT/courses/:id/teacher
+- sætter course som body
+- pakker id ud
+- henter course på id, og ændre teacher på course id
+- addere teacher og id til course 
+- hvis der ingen rows er, return null = controller sender 404: findes ikke
+- hvis findes: sender svar i json
+Hvis fejl, kaster 500: databasefejl
+
+//UPDATE add student to course
+//PUT/:id/students/add
+- sætter body
+- trækker id ud fra params 
+- henter course på id
+- laver en insert i jointabel med course og student 
+- hvis der ingen rows er, return null = controller sender 404: findes ikke
+- hvis findes: sender svar i json
+Hvis fejl, kaster 500: databasefejl
+
+//UPDATE remove student from course
+//PUT/:id/students/remove
+- sætter body
+- trækker id ud fra params 
+- henter course på id
+- laver en delete i jointabel med course og student 
+- hvis der ingen rows er, return null = controller sender 404: findes ikke
+- hvis findes: sender svar i json
+Hvis fejl, kaster 500: databasefejl
