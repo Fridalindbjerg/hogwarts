@@ -5,7 +5,11 @@ info:
 
 http:
   method: PUT
-  url: http://localhost:3000/teachers
+  url: http://localhost:3000/courses/:id/students/remove
+  params:
+    - name: id
+      value: ""
+      type: path
   auth: inherit
 
 settings:

@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/student/:id
+  url: http://localhost:3000/course/:id
   params:
     - name: id
       value: ""
