@@ -5,7 +5,10 @@ info:
 
 http:
   method: PUT
-  url: http://localhost:3000/teachers
+  url: http://localhost:3000/courses/1/teacher
+  body:
+    type: json
+    data: '{"teacher":"etændretnavn"}'
   auth: inherit
 
 settings:

@@ -9,8 +9,6 @@ const houseRouter = express.Router();
 houseRouter.get("/", housesController.getAllHouses);
 
 // GET single house by ID
-houseRouter.get("/:id", async (req, res) => {
-  await housesController.singleHouse(req, res);
-});
+houseRouter.get("/:id", housesController.singleHouse);
 
 export default houseRouter;

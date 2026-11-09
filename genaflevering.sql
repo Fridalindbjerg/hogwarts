@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict IIXvOvJ1Nh07pslBx9JWR3lXi4oRI7qrmvzeT1L4rYEQLAH0A6Y6vifbyRaLnrV
+\restrict dx2QjHMKzi6fx85ubjRTPxea1UXw0P57r1LKKbF4IWxxalwqNDJPfMtXU74wizv
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
 
--- Started on 2026-11-01 22:34:14 CET
+-- Started on 2026-11-09 16:59:34 CET
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -56,6 +56,35 @@ ALTER TABLE public.courses ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
+-- TOC entry 227 (class 1259 OID 16667)
+-- Name: courses_students; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.courses_students (
+    id integer NOT NULL,
+    course integer NOT NULL,
+    student integer NOT NULL
+);
+
+
+ALTER TABLE public.courses_students OWNER TO postgres;
+
+--
+-- TOC entry 226 (class 1259 OID 16666)
+-- Name: courses_students_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.courses_students ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.courses_students_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- TOC entry 225 (class 1259 OID 16547)
 -- Name: houses; Type: TABLE; Schema: public; Owner: postgres
 --
@@ -77,8 +106,8 @@ ALTER TABLE public.houses OWNER TO postgres;
 
 CREATE TABLE public.students (
     id integer NOT NULL,
-    name numeric NOT NULL,
-    year character varying NOT NULL,
+    name character varying NOT NULL,
+    year numeric(4,0) NOT NULL,
     house character varying NOT NULL
 );
 
@@ -130,15 +159,25 @@ ALTER TABLE public.teachers ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- TOC entry 3840 (class 0 OID 16513)
+-- TOC entry 3851 (class 0 OID 16513)
 -- Dependencies: 220
 -- Data for Name: courses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public.courses OVERRIDING SYSTEM VALUE VALUES (1, 'courseEt', 'etændretnavn', 'nogetjegikkeved');
 
 
 --
--- TOC entry 3845 (class 0 OID 16547)
+-- TOC entry 3858 (class 0 OID 16667)
+-- Dependencies: 227
+-- Data for Name: courses_students; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.courses_students OVERRIDING SYSTEM VALUE VALUES (7, 1, 4);
+
+
+--
+-- TOC entry 3856 (class 0 OID 16547)
 -- Dependencies: 225
 -- Data for Name: houses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -148,52 +187,76 @@ INSERT INTO public.houses VALUES (1, 'house', 'blå', 'my');
 
 
 --
--- TOC entry 3844 (class 0 OID 16536)
+-- TOC entry 3855 (class 0 OID 16536)
 -- Dependencies: 224
 -- Data for Name: students; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public.students OVERRIDING SYSTEM VALUE VALUES (3, 'frida', 2035, 'ethus');
+INSERT INTO public.students OVERRIDING SYSTEM VALUE VALUES (4, 'frida', 2036, 'ethus');
+INSERT INTO public.students OVERRIDING SYSTEM VALUE VALUES (5, 'frida', 2036, 'ethus');
+INSERT INTO public.students OVERRIDING SYSTEM VALUE VALUES (6, 'frida', 5036, 'ethus');
+INSERT INTO public.students OVERRIDING SYSTEM VALUE VALUES (7, 'frida', 2035, 'ethus');
 
 
 --
--- TOC entry 3842 (class 0 OID 16525)
+-- TOC entry 3853 (class 0 OID 16525)
 -- Dependencies: 222
 -- Data for Name: teachers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 INSERT INTO public.teachers OVERRIDING SYSTEM VALUE VALUES (1, 'frida', 'hus');
 INSERT INTO public.teachers OVERRIDING SYSTEM VALUE VALUES (2, 'fridaikketest', 'house2');
+INSERT INTO public.teachers OVERRIDING SYSTEM VALUE VALUES (4, 'fridatest1', 'hus');
 
 
 --
--- TOC entry 3851 (class 0 OID 0)
+-- TOC entry 3864 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: courses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.courses_id_seq', 1, false);
+SELECT pg_catalog.setval('public.courses_id_seq', 4, true);
 
 
 --
--- TOC entry 3852 (class 0 OID 0)
+-- TOC entry 3865 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: courses_students_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.courses_students_id_seq', 9, true);
+
+
+--
+-- TOC entry 3866 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: students_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.students_id_seq', 1, false);
+SELECT pg_catalog.setval('public.students_id_seq', 7, true);
 
 
 --
--- TOC entry 3853 (class 0 OID 0)
+-- TOC entry 3867 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: teachers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.teachers_id_seq', 3, true);
+SELECT pg_catalog.setval('public.teachers_id_seq', 4, true);
 
 
 --
--- TOC entry 3685 (class 2606 OID 16523)
+-- TOC entry 3698 (class 2606 OID 16686)
+-- Name: courses_students course_student_unique; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.courses_students
+    ADD CONSTRAINT course_student_unique UNIQUE (course, student);
+
+
+--
+-- TOC entry 3690 (class 2606 OID 16523)
 -- Name: courses courses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -202,7 +265,16 @@ ALTER TABLE ONLY public.courses
 
 
 --
--- TOC entry 3691 (class 2606 OID 16557)
+-- TOC entry 3700 (class 2606 OID 16674)
+-- Name: courses_students courses_students_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.courses_students
+    ADD CONSTRAINT courses_students_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3696 (class 2606 OID 16557)
 -- Name: houses houses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -211,7 +283,7 @@ ALTER TABLE ONLY public.houses
 
 
 --
--- TOC entry 3689 (class 2606 OID 16546)
+-- TOC entry 3694 (class 2606 OID 16546)
 -- Name: students students_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -220,7 +292,7 @@ ALTER TABLE ONLY public.students
 
 
 --
--- TOC entry 3687 (class 2606 OID 16534)
+-- TOC entry 3692 (class 2606 OID 16534)
 -- Name: teachers teachers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -228,11 +300,29 @@ ALTER TABLE ONLY public.teachers
     ADD CONSTRAINT teachers_pkey PRIMARY KEY (id);
 
 
--- Completed on 2026-11-01 22:34:14 CET
+--
+-- TOC entry 3701 (class 2606 OID 16692)
+-- Name: courses_students course; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.courses_students
+    ADD CONSTRAINT course FOREIGN KEY (course) REFERENCES public.courses(id) ON DELETE CASCADE NOT VALID;
+
+
+--
+-- TOC entry 3702 (class 2606 OID 16687)
+-- Name: courses_students studentsOnCourse; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.courses_students
+    ADD CONSTRAINT "studentsOnCourse" FOREIGN KEY (student) REFERENCES public.students(id) ON DELETE CASCADE NOT VALID;
+
+
+-- Completed on 2026-11-09 16:59:34 CET
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict IIXvOvJ1Nh07pslBx9JWR3lXi4oRI7qrmvzeT1L4rYEQLAH0A6Y6vifbyRaLnrV
+\unrestrict dx2QjHMKzi6fx85ubjRTPxea1UXw0P57r1LKKbF4IWxxalwqNDJPfMtXU74wizv
 
