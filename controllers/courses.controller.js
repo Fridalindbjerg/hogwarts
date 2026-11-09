@@ -88,3 +88,36 @@ export async function updateTeacherOnCourse(req, res) {
     res.status(500).json({ error: "Database error" });
   }
 }
+
+export async function addStudentToCourse(req, res) {
+  try {
+    const body = req.body;
+    const id = req.params.id;
+    const result = await coursesRepository.addStudentToCourse(body, id);
+
+    if (result) {
+      res.status(200).json(result);
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Database error" });
+  }
+}
+
+export async function removeStudentFromCourse(req, res) {
+  try {
+    const body = req.body;
+    const id = req.params.id;
+    const result = await coursesRepository.removeStudentFromCourse(body, id);
+
+    if (result.rowCount === 0) return res.sendStatus(404);
+    else {
+      res.sendStatus(204);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Database error" });
+  }
+}

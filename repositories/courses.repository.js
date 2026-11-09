@@ -61,3 +61,27 @@ export async function updateTeacherOnCourse(course, id) {
     return result.rows[0];
   }
 }
+
+export async function addStudentToCourse(body, id) {
+  const result = await pool.query(
+    "INSERT INTO courses_students (course, student) VALUES ($1, $2) RETURNING course, student ",
+    [id, body.student],
+  );
+  if (result.rowCount === 0) {
+    return null;
+  } else {
+    return result.rows[0];
+  }
+}
+
+export async function removeStudentFromCourse(body, id) {
+  const result = await pool.query(
+    "DELETE FROM courses_students WHERE course = $1 and student = $2 RETURNING course, student",
+    [id, body.student],
+  );
+  if (result.rowCount === 0) {
+    return null;
+  } else {
+    return true;
+  }
+}

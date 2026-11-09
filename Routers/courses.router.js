@@ -24,6 +24,12 @@ coursesRouter.delete("/:id", coursesController.deleteCourse);
 coursesRouter.put("/:id/teacher", coursesController.updateTeacherOnCourse);
 
 // UPDATE add student to course
-coursesRouter.put("/:id/teacher", coursesController.updateTeacherOnCourse);
+coursesRouter.put("/:id/students/add", coursesController.addStudentToCourse);
+
+// UPDATE remove student from course
+coursesRouter.put(
+  "/:id/students/remove",
+  coursesController.removeStudentFromCourse,
+);
 
 export default coursesRouter;
