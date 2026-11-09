@@ -1,6 +1,7 @@
 import express from "express";
 import { pool } from "./db.js";
 import houseRouter from "./Routers/houses.router.js";
+import teacherRouter from "./Routers/teachers.router.js";
 import * as teachersController from "./controllers/teachers.controller.js";
 
 const app = express();
@@ -11,32 +12,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => res.send("Hello World"));
 
+//HOUSES
 app.use("/houses/", houseRouter);
 
-//GET all teachers
-app.get("/teachers", async (req, res) => {
-  await teachersController.getAllTeachers(req, res);
-});
-
-// GET single teacher by ID
-app.get("/teachers/:id", async (req, res) => {
-  await teachersController.getTeacherById(req, res);
-});
-
-//CREATE new teacher
-app.post("/teachers", async (req, res) => {
-  await teachersController.createTeacher(req, res);
-});
-
-// UPDATE an existing teacher
-app.put("/teachers/:id", async (req, res) => {
-  await teachersController.updateTeacher(req, res);
-});
-
-// DELETE single teacher
-app.delete("/teachers/:id", async (req, res) => {
-  await teachersController.deleteTeacher(req, res);
-});
+//TEACHERS
+app.use("/teachers/", teacherRouter);
 
 //STUDENTS
 
