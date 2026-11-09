@@ -23,4 +23,7 @@ coursesRouter.delete("/:id", coursesController.deleteCourse);
 // UPDATE teacher on course
 coursesRouter.put("/:id/teacher", coursesController.updateTeacherOnCourse);
 
+// UPDATE add student to course
+coursesRouter.put("/:id/teacher", coursesController.updateTeacherOnCourse);
+
 export default coursesRouter;

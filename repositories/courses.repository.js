@@ -46,14 +46,14 @@ export async function deleteCourse(id) {
 }
 
 //find course
-//hvis ikke findes: 404
+//hvis ikke findes: null
 // hvis findes:
 //update teacher
-//return row
-export async function updateCourses(course, id) {
+//return row [0] = 1
+export async function updateTeacherOnCourse(course, id) {
   const result = await pool.query(
-    "UPDATE courses SET name = $1, teacher = $2, students = $3 WHERE id = $4 RETURNING name, teacher, students, id",
-    [course.name, course.teacher, course.students, id],
+    "UPDATE courses SET teacher = $1 WHERE id = $2 RETURNING teacher, id",
+    [course.teacher, id],
   );
   if (result.rowCount === 0) {
     return null;

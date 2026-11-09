@@ -72,11 +72,11 @@ export async function deleteCourse(req, res) {
   }
 }
 
-export async function updateCourse(req, res) {
+export async function updateTeacherOnCourse(req, res) {
   try {
     const course = req.body;
     const id = req.params.id;
-    const result = await coursesRepository.updateCourses(course, id);
+    const result = await coursesRepository.updateTeacherOnCourse(course, id);
 
     if (result) {
       res.status(200).json(result);
