@@ -1,0 +1,15 @@
+info:
+  name: update remove student from course
+  type: http
+  seq: 8
+
+http:
+  method: PUT
+  url: http://localhost:3000/teachers
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
