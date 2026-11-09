@@ -1,8 +1,8 @@
 import express from "express";
-import { pool } from "./db.js";
 import houseRouter from "./Routers/houses.router.js";
 import teacherRouter from "./Routers/teachers.router.js";
 import studentRouter from "./Routers/students.router.js";
+import courseRouter from "./Routers/courses.router.js";
 
 const app = express();
 const port = 3000;
@@ -22,14 +22,43 @@ app.use("/teachers/", teacherRouter);
 
 app.use("/students/", studentRouter);
 
-// // CREATE new student
-// app.post("/students", async (req, res) => {
-//   const student = req.body;
+//COURSES
+app.use("/courses/", courseRouter);
+
+// // GET all courses
+// app.get("/courses", async (req, res) => {
+//   try {
+//     const result = await pool.query("SELECT * FROM courses ORDER BY id");
+//     res.json(result.rows);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Database error", code: err.code });
+//   }
+// });
+
+// // GET single course by ID
+// app.get("/courses/:id", async (req, res) => {
+//   try {
+//     const result = await pool.query("SELECT * FROM courses WHERE id = $1", [
+//       req.params.id,
+//     ]);
+//     if (result.rowCount === 0) return res.sendStatus(404);
+
+//     res.status(200).json(result.rows[0]);
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ error: "Database error" });
+//   }
+// });
+
+// // CREATE new course
+// app.post("/courses", async (req, res) => {
+//   const course = req.body;
 
 //   try {
 //     const result = await pool.query(
-//       "INSERT INTO students (name, house, year) VALUES ($1, $2, $3) RETURNING *",
-//       [student.name, student.house, student.year],
+//       "INSERT INTO courses (name, teacher, students) VALUES ($1, $2, $3) RETURNING *",
+//       [course.name, course.teacher, course.students],
 //     );
 
 //     res.status(201).json(result.rows[0]);
@@ -39,15 +68,15 @@ app.use("/students/", studentRouter);
 //   }
 // });
 
-// // UPDATE an existing student
-// app.put("/students/:id", async (req, res) => {
-//   const student = req.body;
+// // UPDATE an existing course
+// app.put("/courses/:id", async (req, res) => {
+//   const course = req.body;
 //   const id = req.params.id;
 
 //   try {
 //     const result = await pool.query(
-//       "UPDATE students SET name = $1, house = $2, year = $3 WHERE id = $4 RETURNING *",
-//       [student.name, student.house, student.year, id],
+//       "UPDATE courses SET name = $1, teacher = $2, students = $3 WHERE id = $4 RETURNING *",
+//       [course.name, course.teacher, course.students, id],
 //     );
 
 //     if (result.rowCount === 0) return res.sendStatus(404);
@@ -59,10 +88,10 @@ app.use("/students/", studentRouter);
 //   }
 // });
 
-// // DELETE single student
-// app.delete("/students/:id", async (req, res) => {
+// // DELETE single course
+// app.delete("/courses/:id", async (req, res) => {
 //   try {
-//     const del = await pool.query("DELETE FROM students WHERE id = $1", [
+//     const del = await pool.query("DELETE FROM courses WHERE id = $1", [
 //       req.params.id,
 //     ]);
 
@@ -74,86 +103,5 @@ app.use("/students/", studentRouter);
 //     res.status(500).json({ error: "Database error" });
 //   }
 // });
-
-//COURSES
-
-// GET all courses
-app.get("/courses", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM courses ORDER BY id");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database error", code: err.code });
-  }
-});
-
-// GET single course by ID
-app.get("/courses/:id", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM courses WHERE id = $1", [
-      req.params.id,
-    ]);
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-// CREATE new course
-app.post("/courses", async (req, res) => {
-  const course = req.body;
-
-  try {
-    const result = await pool.query(
-      "INSERT INTO courses (name, teacher, students) VALUES ($1, $2, $3) RETURNING *",
-      [course.name, course.teacher, course.students],
-    );
-
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-// UPDATE an existing course
-app.put("/courses/:id", async (req, res) => {
-  const course = req.body;
-  const id = req.params.id;
-
-  try {
-    const result = await pool.query(
-      "UPDATE courses SET name = $1, teacher = $2, students = $3 WHERE id = $4 RETURNING *",
-      [course.name, course.teacher, course.students, id],
-    );
-
-    if (result.rowCount === 0) return res.sendStatus(404);
-
-    res.status(200).json(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-// DELETE single course
-app.delete("/courses/:id", async (req, res) => {
-  try {
-    const del = await pool.query("DELETE FROM courses WHERE id = $1", [
-      req.params.id,
-    ]);
-
-    if (del.rowCount === 0) return res.sendStatus(404);
-
-    res.sendStatus(204);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
 
 app.listen(port, () => console.log(`Server kører på http://localhost:${port}`));
