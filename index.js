@@ -3,6 +3,7 @@ import houseRouter from "./Routers/houses.router.js";
 import teacherRouter from "./Routers/teachers.router.js";
 import studentRouter from "./Routers/students.router.js";
 import courseRouter from "./Routers/courses.router.js";
+import errorhandler from "./errorhandling/errorhandler.js";
 
 const app = express();
 const port = 3000;
@@ -26,3 +27,5 @@ app.use("/students/", studentRouter);
 app.use("/courses/", courseRouter);
 
 app.listen(port, () => console.log(`Server kører på http://localhost:${port}`));
+
+app.use(errorhandler);
