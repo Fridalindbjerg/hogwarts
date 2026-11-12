@@ -1,8 +1,15 @@
 export default (err, req, res, next) => {
   console.log(err.message);
-  res.status(500).json({
+
+  let error = "internal server error";
+  if (err.statusCode == 404) {
+    error = "not found";
+  } else if (err.statusCode == 400) {
+    error = "bad request";
+  }
+  res.status(err.statusCode).json({
     message: err.message,
-    error: "internal server error",
-    statusCode: 500,
+    error: error,
+    statusCode: err.statusCode,
   });
 };

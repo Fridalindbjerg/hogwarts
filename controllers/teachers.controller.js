@@ -1,4 +1,5 @@
 import * as teachersRepository from "../repositories/teachers.repository.js";
+import HTTPError from "../errorhandling/HTTPerror.js";
 
 export async function getAllTeachers(req, res) {
   const allTeachers = await teachersRepository.getAllTeachers();
@@ -9,12 +10,10 @@ export async function getTeacherById(req, res) {
   const id = req.params.id;
   const teacher = await teachersRepository.getTeacherById(id);
 
-  if (!teacher) {
-    // res.sendStatus(404);
-    throw new Error("teacher not found");
-  } else {
+  if (teacher) {
     res.status(200).json(teacher);
   }
+  throw new HTTPError(404, "teacher not found");
 }
 
 // fortæl controller om hvad teacher indeholder = body

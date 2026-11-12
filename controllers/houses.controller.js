@@ -1,4 +1,5 @@
 import * as housesRepository from "../repositories/houses.respository.js";
+import HTTPError from "../errorhandling/HTTPerror.js";
 
 export async function getAllHouses(req, res) {
   const allHouses = await housesRepository.getAllHouses();
@@ -15,7 +16,7 @@ export async function singleHouse(req, res) {
     //   error: "not found",
     //   statusCode: 404,
     // });
-    throw new Error("house does not exist");
+    throw new HTTPError(404, "house not found");
   } else {
     res.status(200).json(house);
   }
